@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block title %}Login de empresas{% endblock %}
+{% block style %}
+  {% load static %}
+{% endblock %}
+{% block body %}
+  {% if error %}
+  <div class="container" id="error">
+    <div class="row">
+      <div class="col-md-6 col-md-offset-4">
+        <div class="alert alert-danger">
+          <i class="fa fa-window-close" aria-hidden="true"></i>
+          <h5>Email ou senha inválidos!</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  <div class="container-fluid" id="add_candidato">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+              <div class="panel panel-primary">
+                <div class="panel-heading lead text-center">
+                  Login de empresas
+                </div>
+                <div class="panel-primary">
+                  <div class="panel-body">
+                    <form action="{% url 'core:Login_empresa' %}" method="POST" class="form">
+                      {% csrf_token %}
+                      {% for field in form %}
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="form-group">
+                              {{ field }}
+                            </div>
+                          </div>
+                        </div>
+                        <div class="wrapper_space"></div>
+                      {% endfor %}
+                      <div class="row">
+                        <div class="col-md-12 text-center">
+                          <button type="submit" class="btn btn-default">
+                            Entrar
+                            <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                          </button>
+                          <a href="{% url 'core:Add_empresa' %}" class="btn btn-primary">
+                            Cadastrar-se
+                            <i class="fa fa-plus-square" aria-hidden="true"></i>
+                          </a>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-12 text-center">
+                          <a href="{% url 'core:Add_candidato' %}" class="empresa_link">
+                            Candidatos
+                          </a>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block script %}
+<script src="{% static 'js/error.js' %}"></script>
+{% endblock %}

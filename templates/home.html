@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %}Vagas de trabalho{% endblock %}
+{% block body %}
+  {% include 'navbar.html' %}
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-info">
+          <div class="panel-heading lead">
+            <h5 class="text-white">Vagas</h5>
+          </div>
+          <div class="panel-body">
+            {% if vagas %}
+              <table class="table table-responsive table-hover">
+                <thead>
+                  <tr>
+                    <th class="text-center">#</th>
+                    <th class="text-center">Descrição</th>
+                    <th class="text-center">Salario min</th>
+                    <th class="text-center">Salario max</th>
+                    <th class="text-center">Experiencia</th>
+                    <th class="text-center">Escolaridade</th>
+                    <th class="text-center">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for vaga in vagas %}
+                    <tr class="text-center">
+                      <td>
+                        {{ vaga.id }}
+                      </td>
+                      <td>
+                        {{ vaga.descricao }}
+                      </td>
+                      <td>
+                        {{ vaga.faixa_salarial_min }}
+                      </td>
+                      <td>
+                        {{ vaga.faixa_salarial_max }}
+                      </td>
+                      <td>
+                        {{ vaga.experiencia }}
+                      </td>
+                      <td>
+                        {% for id, escolaridade in escolaridades %}
+                          {% if id == vaga.escolaridade %}
+                            {{ escolaridade }}
+                          {% endif %}
+                        {% endfor %}
+                      </td>
+                      <td>
+                        {% if request.session.email_empresa %}
+                          <button value="{{ vaga.id }}" class="btn btn-danger excluir" >
+                            <i class="fa fa-trash-o" aria-hidden="true"></i>
+                          </button>
+                          <a href="{% url 'core:EmpresaEditarVaga' vaga.id %}" class="btn btn-warning">
+                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                          </a>
+                          <a href="{% url 'core:VagasCandidatos' vaga.id %}" class="btn btn-info candidatos">
+                            <i class="fa fa-users" aria-hidden="true"></i>
+                          </a>
+                        {% elif request.session.email %}
+                          <a href="{% url 'core:Candidatar' vaga.id %}" class="btn btn-success candidatar">
+                            <i class="fa fa-search-plus" aria-hidden="true"></i>
+                          </a>
+                        {% endif %}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            {% else %}
+            <div class="row">
+              <div class="col-md-12 text-center">
+                <h5>Você não cadastrou nenhuma vaga!</h5>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="excluirModal" class="modal fade">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h4 class="modal-title">Excluir vaga</h4>
+              </div>
+              <div class="modal-body">
+                  <p class="modal-text">Você tem certeza que deseja excluir essa vaga ? </p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-warning" data-dismiss="modal">
+                  <i class="fa fa-2x fa-times" aria-hidden="true"></i>
+                </button>
+                <button type="button" id="confirmar" class="btn btn-danger">
+                  <i class="fa fa-2x fa-trash-o" aria-hidden="true"></i>
+                </button>
+              </div>
+          </div>
+      </div>
+  </div>
+{% endblock %}
+{% block script %}
+{% load static %}
+<script src="{% static 'js/home.js' %}"></script>
+{% endblock %}

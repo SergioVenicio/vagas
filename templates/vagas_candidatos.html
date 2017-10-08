@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% block title %}Vagas de trabalho{% endblock %}
+{% block body %}
+  {% include 'navbar.html' %}
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-warning">
+          <div class="panel-heading lead">
+            <h5 class="text-white">Candidatos</h5>
+          </div>
+          <div class="panel-body">
+            {% if vaga.candidatos.all %}
+              <table class="table table-responsive table-hover">
+                <thead>
+                  <tr>
+                    <th class="text-center">#</th>
+                    <th class="text-center">Email</th>
+                    <th class="text-center">Escolaridade</th>
+                    <th class="text-center">Pretenção salarial</th>
+                    <th class="text-center">Distancia do trabalho</th>
+                    <th class="text-center">Experiencia</th>
+                    <th class="text-center">Atende os requisitos</th>
+                    <th class="text-center">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for candidato in vaga.candidatos.all %}
+                    <tr class="text-center">
+                      <td>
+                        {{ candidato.id }}
+                      </td>
+                      <td>
+                        {{ candidato.email }}
+                      </td>
+                      <td>
+                        {% if candidato.escolaridade %}
+                          {% for id, escolaridade in escolaridades %}
+                            {% if id == candidato.escolaridade %}
+                              {{ escolaridade }}
+                            {% endif %}
+                          {% endfor %}
+                        {% else %}
+                          Não informado
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if candidato.faixa_salarial %}
+                          {{ candidato.faixa_salarial }}
+                        {% else %}
+                          Não informado
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if candidato.distancia %}
+                          {{ candidato.distancia }}
+                        {% else %}
+                          Não informado
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if candidato.experiencia %}
+                          {{ candidato.experiencia|slugify }}
+                        {% else %}
+                          Não informado
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% for atende in list_atendem %}
+                          {% if candidato.id == atende.candidato.id %}
+                            <button class="btn btn-success">
+                              <i class="fa fa-check-circle" aria-hidden="true"></i>
+                            </button>
+                          {% endif %}
+                        {% endfor %}
+                        {% for nao_atende in list__nao_atendem %}
+                          {% if candidato.id == nao_atende.candidato.id %}
+                            <button class="btn btn-warning">
+                              <i class="fa fa-times-circle" aria-hidden="true"></i>
+                            </button>
+                          {% endif %}
+                        {% endfor %}
+                      </td>
+                      <td>
+                        <a href="{% url 'core:EmpresaEditarCandidato' candidato.id %}" class="btn btn-info">
+                          <i class="fa fa-pencil" aria-hidden="true"></i>
+                        </a>
+                        {% for atende in list_atendem %}
+                          {% if candidato.id == atende.candidato.id %}
+                            <button type="button" class="btn btn-danger btn-excluir" value="{{ atende.id }}">
+                              <i class="fa fa-trash-o" aria-hidden="true"></i>
+                            </button>
+                          {% endif %}
+                        {% endfor %}
+                        {% for nao_atende in list__nao_atendem %}
+                          {% if candidato.id == nao_atende.candidato.id %}
+                            <button type="button" class="btn btn-danger btn-excluir" value="{{ nao_atende.id }}">
+                              <i class="fa fa-trash-o" aria-hidden="true"></i>
+                            </button>
+                          {% endif %}
+                        {% endfor %}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            {% else %}
+              <div class="row">
+                <div class="col-md-12 text-center">
+                  <h5>Nenhum candidato se cadastrou em sua vaga!</h5>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12 text-center">
+                  <button onclick="window.history.back()" type="button" class="btn btn-default">
+                    Voltar
+                    <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            {% endif %}
+            {% if vaga.candidatos.all %}
+              <div class="row">
+                <div class="col-md-6 text-center">
+                  <p>
+                    Candidatos que atendem os requisitos: {{ candidatos }}
+                  </p>
+                </div>
+                <div class="col-md-6 text-center">
+                  <p>
+                    Candidatos que não atendem os requisitos: {{ candidatos_nao_atendem }}
+                  </p>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="exluirModal" class="modal fade">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h4 class="modal-title">Excluir candidato dessa vaga</h4>
+              </div>
+              <div class="modal-body">
+                  <p class="modal-text">
+                    Você realmente deseja excluir esse candidato ?
+                  </p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                  <i class="fa fa-2x fa-times" aria-hidden="true"></i>
+                </button>
+                <button id="excluir" type="button" class="btn btn-danger" data-dismiss="modal">
+                  <i class="fa fa-2x fa-trash-o" aria-hidden="true"></i>
+                </button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+{% endblock %}
+{% block script %}
+{% load static %}
+<script src="{% static 'js/vagaempresa.js' %}"></script>
+{% endblock %}

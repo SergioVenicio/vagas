@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block title %}Editar perfil{% endblock %}
+{% block style %}
+  {% load static %}
+{% endblock %}
+{% block body %}
+  {% include 'navbar.html' %}
+  {% if error %}
+  <div class="container" id="error">
+    <div class="row">
+      <div class="col-md-6 col-md-offset-4">
+        <div class="alert alert-danger">
+          <i class="fa fa-window-close" aria-hidden="true"></i>
+          <h5>Email ou senha inválidos!</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  <div class="container-fluid" id="edt_candidato">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+              <div class="panel panel-info">
+                <div class="panel-heading lead text-center">
+                  Editar perfil
+                </div>
+                <div class="panel-primary">
+                  <div class="panel-body">
+
+                    <form class="form" id="form_editar_candidato">
+                      {% csrf_token %}
+                      {% for field in form %}
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="form-group">
+                              {{ field }}
+                            </div>
+                          </div>
+                        </div>
+                        <div class="wrapper_space"></div>
+                      {% endfor %}
+                      <div class="row">
+                        <div class="col-md-12 text-center">
+                          <input type="hidden" name="id" value="{{ request.session.id }}">
+                          <button type="button" id="btn-editar" class="btn btn-info">
+                            Editar
+                            <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="errorModal" class="modal fade">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h4 class="modal-title"></h4>
+              </div>
+              <div class="modal-body">
+                  <p class="modal-text"></p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                  <i class="fa fa-2x fa-times" aria-hidden="true"></i>
+                </button>
+              </div>
+          </div>
+      </div>
+  </div>
+{% endblock %}
+{% block script %}
+<script src="{% static 'js/editar_candidato.js' %}"></script>
+<script src="{% static 'js/fields.js' %}"></script>
+<script src="{% static 'js/error.js' %}"></script>
+{% endblock %}

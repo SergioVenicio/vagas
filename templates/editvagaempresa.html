@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block title %}Editar vaga{% endblock %}
+{% block style %}
+  {% load static %}
+{% endblock %}
+{% block body %}
+  {% include 'navbar.html' %}
+  <div class="container-fluid" id="empresa_vaga">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+              <div class="panel panel-warning">
+                <div class="panel-heading lead text-center">
+                  Editar vaga
+                </div>
+                <div class="panel-primary">
+                  <div class="panel-body">
+
+                    <form class="form" id="formEditarVaga">
+                      {% csrf_token %}
+                      {% for field in form %}
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="form-group">
+                              {{ field.errors }}
+                              {{ field }}
+                            </div>
+                          </div>
+                        </div>
+                        <div class="wrapper_space"></div>
+                      {% endfor %}
+                      <div class="row">
+                        <div class="col-md-12 text-center">
+                          <input type="hidden" value="{{ vaga_id }}" id="id">
+                          <button type="button" id="btn-editar" class="btn btn-warning">
+                            Editar
+                            <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="successModal" class="modal fade">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h4 class="modal-title">Vaga</h4>
+              </div>
+              <div class="modal-body">
+                  <p class="modal-text">Vaga editada com sucesso!</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                  <i class="fa fa-2x fa-times" aria-hidden="true"></i>
+                </button>
+              </div>
+          </div>
+      </div>
+  </div>
+{% endblock %}
+{% block script %}
+<script src="{% static 'js/editempresa.js' %}"></script>
+{% endblock %}

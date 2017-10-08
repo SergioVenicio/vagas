@@ -1,0 +1,38 @@
+#error, #success {
+  position: absolute;
+  top: 0.5em;
+  text-align: center;
+}
+#error h5, #success h5{
+  color: #F5F5F5;
+}
+#error i, #success h5 {
+  position: absolute;
+  right: 1.8em;
+  top: 0.5em;
+  cursor: pointer;
+}
+#add_candidato {
+  margin-top: 10em;
+}
+#add_empresa {
+  margin-top: 5em;
+}
+.has-info, .has-info .form-control {
+  border-bottom: none;
+  -webkit-box-shadow: inset 0 -2px 0 #00BBFF!important;
+  box-shadow: inset 0 -2px 0 #00BBFF!important;
+}
+.has-danger, .has-danger .form-control {
+  border-bottom: none;
+  -webkit-box-shadow: inset 0 -2px 0 #F44141!important;
+  box-shadow: inset 0 -2px 0 #F44141!important;
+}
+.empresa_link, .candidato_link {
+  padding-top: 0.5em;
+  margin-top: 0.5em;
+  display: inline-block;
+}
+.text-white {
+  color: #F6F6F6;
+}

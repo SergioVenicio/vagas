@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Editar candidato{% endblock %}
+{% block style %}
+  {% load static %}
+{% endblock %}
+{% block body %}
+  {% include 'navbar.html' %}
+
+  <div class="container-fluid" id="edt_candidato">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+              <div class="panel panel-info">
+                <div class="panel-heading lead">
+                  Editar o perfil de <strong>{{ candidato.email }}</strong>
+                </div>
+                <div class="panel-primary">
+                  <div class="panel-body">
+
+                    <form class="form" id="form_editar_candidato">
+                      {% csrf_token %}
+                      {% for field in form %}
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="form-group">
+                              {{ field }}
+                            </div>
+                          </div>
+                        </div>
+                        <div class="wrapper_space"></div>
+                      {% endfor %}
+                      <div class="row">
+                        <div class="col-md-12 text-center">
+                          <input type="hidden" name="id" id="id" value="{{ candidato.id }}">
+                          <button type="button" id="btn-editar" class="btn btn-info">
+                            Editar
+                            <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="successModal" class="modal fade">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h4 class="modal-title">Editar candidato</h4>
+              </div>
+              <div class="modal-body">
+                  <p class="modal-text">
+                    Candidato alterado com sucesso!
+                  </p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                  <i class="fa fa-2x fa-times" aria-hidden="true"></i>
+                </button>
+              </div>
+          </div>
+      </div>
+  </div>
+{% endblock %}
+{% block script %}
+<script src="{% static 'js/empresaeditarcandidato.js' %}"></script>
+<script src="{% static 'js/fields.js' %}"></script>
+{% endblock %}
