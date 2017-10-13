@@ -3,53 +3,56 @@ from models import Empresas
 from Candidatos import HashPassword
 
 
-def LoginEmpresa(request, email=None, senha=None):
-    if not request.session.get('email_empresa', False):
-        try:
-            login_empresa = Empresas.objects.get(
-                email=email, senha=HashPassword(senha)
-            )
+class _Empresas():
+    def login_empresa(self, request=None, email=None, senha=None):
+        if not request.session.get('email_empresa', None):
+            self.email = email
+            self.senha = HashPassword(senha)
+            try:
+                self.empresa = Empresas.objects.get(
+                    email=self.email, senha=self.senha
+                )
 
-            if request.session.get('email', False):
-                del request.session['email']
-            if request.session.get('id', False):
-                del request.session['id']
-            if request.session.get('candidato'):
-                del request.session['candidato']
+                if request.session.get('email', False):
+                    del request.session['email']
+                if request.session.get('id', False):
+                    del request.session['id']
+                if request.session.get('candidato'):
+                    del request.session['candidato']
 
-            request.session['email_empresa'] = login_empresa.email
-            request.session['id_empresa'] = login_empresa.id
-            request.session['empresa'] = True
-            return login_empresa
-        except Empresas.DoesNotExist:
-            return False
-    else:
-        return True
-
-
-def EmpresaUpdate(id=None, email=None, razao_social=None, endereco=None,
-                  ramo=None, numero=None, senha=None):
-    if id:
-        empresa = GetEmpresaById(id=id)
-        if empresa:
-            if senha:
-                empresa.senha = HashPassword(senha)
-            empresa.email = email
-            empresa.razao_social = razao_social
-            empresa.endereco = endereco
-            empresa.ramo = ramo
-            empresa.numero = numero
-            empresa.save()
-            return True
+                request.session['email_empresa'] = self.empresa.email
+                request.session['id_empresa'] = self.empresa.id
+                request.session['empresa'] = True
+                return self.empresa
+            except Empresas.DoesNotExist:
+                return False
         else:
             return False
-    else:
-        return False
 
+    def empresa_update(self, id=None, email=None, razao_social=None,
+                       endereco=None, ramo=None, numero=None, senha=None):
+        if id:
+            self.empresa = self.get_empresa_by_id(id=id)
+            if self.empresa:
+                if senha:
+                    self.empresa.senha = HashPassword(senha)
+                self.empresa.email = email
+                self.empresa.razao_social = razao_social
+                self.empresa.endereco = endereco
+                self.empresa.ramo = ramo
+                self.empresa.numero = numero
+                self.empresa.save()
+                return True
+        else:
+            return False
 
-def GetEmpresaById(id=id):
-    try:
-        empresa = Empresas.objects.get(pk=id)
-        return empresa
-    except Empresas.DoesNotExist:
-        return False
+    def get_empresa_by_id(self, id=id):
+        if id:
+            self.id = id
+            try:
+                self.empresa = Empresas.objects.get(pk=self.id)
+                return self.empresa
+            except Empresas.DoesNotExist:
+                return False
+        else:
+            return False
