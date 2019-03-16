@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
-from models import ESCOLARIDADE_CHOICES
+from core.models import (
+    ESCOLARIDADE_CHOICES, HashPassword, Candidatos,
+    CheckLogin, Empresas, Vagas
+)
 from django.views.decorators.csrf import csrf_exempt
-from forms import CandidatoForm, EditarCandidatoForm, EmpresaForm, \
-                  EmpresaLoginForm, EmpresaEditForm, VagaEmpresa, \
-                  EmpresaEditarCandidatoForm
-from Candidatos import _Candidatos, CheckLogin, HashPassword
-from Empresas import _Empresas
-from Vagas import _Vagas
+from core.forms import (
+    CandidatoForm, EditarCandidatoForm, EmpresaForm,
+    EmpresaLoginForm, EmpresaEditForm, VagaEmpresa, EmpresaEditarCandidatoForm
+)
 from json import dumps
 
 
@@ -35,10 +36,10 @@ def Add_candidato(request):
 
 def Login_candidato(request):
     if request.method == 'POST':
-        _candidatos = _Candidatos()
         email = request.POST.get('email', False)
         senha = request.POST.get('senha', False)
-        if _candidatos.login(request=request, email=email, senha=senha):
+
+        if Candidatos().login(request=request, email=email, senha=senha):
             return HttpResponseRedirect(reverse('core:Home'))
         else:
             context = {'form': CandidatoForm, 'error': True}
@@ -64,7 +65,7 @@ def Logout(request):
 def Editar_candidato(request):
     if CheckLogin(request):
         id = request.session.get('id', False)
-        _candidatos = _Candidatos()
+        _candidatos = Candidatos()
         if request.method == 'POST':
             if id:
                 email = request.POST.get('email', False)
@@ -110,7 +111,7 @@ def Login_empresa(request):
     if request.method == 'POST':
         email = request.POST.get('email', False)
         senha = request.POST.get('senha', False)
-        _empresas = _Empresas()
+        _empresas = Empresas()
         if _empresas.login_empresa(request, email=email, senha=senha):
             return HttpResponseRedirect(reverse('core:Home'))
         else:
@@ -136,7 +137,7 @@ def LogoutEmpresa(request):
 @csrf_exempt
 def Editar_empresa(request):
     if CheckLogin(request):
-        _empresas = _Empresas()
+        _empresas = Empresas()
         id = request.session.get('id_empresa', False)
         if request.method == 'POST':
             if id:
@@ -164,9 +165,12 @@ def Editar_empresa(request):
 
 
 def CadastrarVagaEmpresa(request):
+    id = request.session.get('id_empresa', False)
+    if not id:
+        return redirect('/')
+
     if request.method == 'POST':
-        id = request.session.get('id_empresa', False)
-        _empresas = _Empresas()
+        _empresas = Empresas()
         empresa = _empresas.get_empresa_by_id(id=id)
         form = VagaEmpresa(request.POST)
         if form.is_valid():
@@ -186,7 +190,7 @@ def CadastrarVagaEmpresa(request):
 def ExcluirVagaEmpresa(request):
     if CheckLogin(request):
         id = request.POST.get('id', False)
-        _vagas = _Vagas()
+        _vagas = Vagas()
         vaga = _vagas.get_vaga_by_id(id=id)
         if vaga:
             vaga.delete()
@@ -202,11 +206,11 @@ def ExcluirVagaEmpresa(request):
 @csrf_exempt
 def EmpresaEditarVaga(request, id=None):
     if CheckLogin(request):
-        _vagas = _Vagas()
+        _vagas = Vagas()
         if request.session.get('email_empresa', False):
             if request.method == 'POST':
                 id = request.POST.get('id', False)
-                _empresas = _Empresas()
+                _empresas = Empresas()
                 vaga = _vagas.get_vaga_by_id(id=id)
                 if vaga:
                     empresa = _empresas.get_empresa_by_id(
@@ -247,8 +251,9 @@ def EmpresaEditarVaga(request, id=None):
 def VagasCandidatos(request, id=None):
     if CheckLogin(request):
         if request.session.get('email_empresa', False):
-            _vagas = _Vagas()
+            _vagas = Vagas()
             vaga = _vagas.get_vaga_by_id(id=id)
+
             candidatos_atendem = _vagas.candidatos_atendem_requisitos(
                 vaga=vaga
             )
@@ -279,7 +284,7 @@ def VagasCandidatos(request, id=None):
 
 @csrf_exempt
 def Candidatar(request, id=None):
-    _vagas = _Vagas()
+    _vagas = Vagas()
     vaga = _vagas.get_vaga_by_id(id=id)
     if request.method == 'POST':
         id_candidato = request.POST.get('id')
@@ -298,7 +303,7 @@ def Candidatar(request, id=None):
 
 @csrf_exempt
 def EmpresaEditarCandidato(request, id_candidato=None):
-    _candidatos = _Candidatos()
+    _candidatos = Candidatos()
     candidato = _candidatos.getcandidato_by_id(id=id_candidato)
     if request.method == 'POST':
         escolaridade = request.POST.get('escolaridade', False)
@@ -325,7 +330,7 @@ def EmpresaEditarCandidato(request, id_candidato=None):
 def EmpresaDeletarVaga(request):
     if request.method == 'POST':
         id = request.POST.get('id', False)
-        _vagas = _Vagas()
+        _vagas = Vagas()
         if id:
             candidato_vaga = _vagas.get_candidatosvaga_by_id(id=id)
             print(candidato_vaga)
@@ -344,9 +349,9 @@ def EmpresaDeletarVaga(request):
 
 def Home(request):
     if CheckLogin(request):
-        _vagas = _Vagas()
+        _vagas = Vagas()
         if request.session.get('email_empresa', False):
-            _empresas = _Empresas()
+            _empresas = Empresas()
             empresa = _empresas.get_empresa_by_id(
                     request.session.get('id_empresa')
             )

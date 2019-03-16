@@ -6,7 +6,7 @@ SECRET_KEY = 'j-d8!n$lh-6_u^97zv#usybs+kf13ktoztvf8q*z8nv9t9@m*q'
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = (
     'django.contrib.admin',
@@ -51,8 +51,11 @@ WSGI_APPLICATION = 'vagas.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'vagas',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1'
     }
 }
 
